@@ -1,3 +1,7 @@
+/**
+ * @author <Ly Minh Hanh - s3979290>
+ */
+
 import java.util.Scanner;
 
 public class DataInput {
