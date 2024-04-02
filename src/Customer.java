@@ -4,7 +4,7 @@
 
 import java.util.List;
 
-public abstract class Customer {
+public abstract class Customer extends SystemManager{
     private String cID;
     private String fullName;
     private InsuranceCard insuranceCard;
