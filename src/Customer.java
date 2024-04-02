@@ -9,7 +9,7 @@ public abstract class Customer {
     private String fullName;
     private InsuranceCard insuranceCard;
     private List<Claim> claimList;
-    private static int nextID = 1;
+    private static int nextCID = 1;
 
     public Customer(String fullName) {
         this.cID = generateCID();
@@ -20,8 +20,8 @@ public abstract class Customer {
 
     // generate unique cID
     protected synchronized String generateCID() {
-        String CID = "c-" + String.format("%07d", nextID);
-        nextID++;
+        String CID = "c-" + String.format("%07d", nextCID);
+        nextCID++;
         return CID;
     }
 
@@ -31,7 +31,7 @@ public abstract class Customer {
         return false;
     }
 
-    public String getcID() {
+    public String getCID() {
         return cID;
     }
 
