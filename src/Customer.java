@@ -21,6 +21,7 @@ public abstract class Customer {
     // generate unique cID
     protected synchronized String generateCID() {
         String CID = "c-" + String.format("%07d", nextID);
+        nextID++;
         return CID;
     }
 
@@ -30,4 +31,19 @@ public abstract class Customer {
         return false;
     }
 
+    public String getcID() {
+        return cID;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public InsuranceCard getInsuranceCard() {
+        return insuranceCard;
+    }
+
+    public List<Claim> getClaimList() {
+        return claimList;
+    }
 }
