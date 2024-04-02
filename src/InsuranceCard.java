@@ -5,8 +5,38 @@
 import java.time.LocalDate;
 
 public class InsuranceCard {
-    private String number;
+    private String cardNumber;
     private Customer cardHolder;            // only one cardholder
     private String policyOwner;
     private LocalDate expirationDate;
+    private static int nextCardNumber = 1;
+
+    public InsuranceCard(Customer cardHolder, String policyOwner, LocalDate expirationDate) {
+        this.cardNumber = generateCardNumber();
+        this.cardHolder = cardHolder;
+        this.policyOwner = policyOwner;
+        this.expirationDate = expirationDate;
+    }
+
+    protected synchronized String generateCardNumber() {
+        String cardNumber = String.format("%010d", nextCardNumber);
+        nextCardNumber++;
+        return cardNumber;
+    }
+
+    public String getCardNumber() {
+        return cardNumber;
+    }
+
+    public Customer getCardHolder() {
+        return cardHolder;
+    }
+
+    public String getPolicyOwner() {
+        return policyOwner;
+    }
+
+    public LocalDate getExpirationDate() {
+        return expirationDate;
+    }
 }
