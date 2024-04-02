@@ -3,4 +3,10 @@
  */
 
 public class Dependent extends Customer {
+    private PolicyHolder policyHolder;
+
+    public Dependent(String fullName, PolicyHolder policyHolder) {
+        super(fullName);
+        this.policyHolder = policyHolder;
+    }
 }
