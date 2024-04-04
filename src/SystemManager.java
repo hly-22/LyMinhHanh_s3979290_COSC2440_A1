@@ -1,11 +1,14 @@
+/**
+ * @author <Ly Minh Hanh - s3979290>
+ */
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * @author <Ly Minh Hanh - s3979290>
- */
 
 public class SystemManager implements ClaimProcessManager{
     private List<Customer> customers;
@@ -13,13 +16,15 @@ public class SystemManager implements ClaimProcessManager{
     private List<Claim> claims;
     CustomerViewText customerViewText;
     InsuranceCardViewText insuranceCardViewText;
+    ClaimViewText claimViewText;
     Scanner scanner;
-    public SystemManager(CustomerViewText customerViewText, InsuranceCardViewText insuranceCardViewText) {
+    public SystemManager(CustomerViewText customerViewText, InsuranceCardViewText insuranceCardViewText, ClaimViewText claimViewText) {
         this.customers = new ArrayList<>();
         this.insuranceCards = new ArrayList<>();
         this.claims = new ArrayList<>();
         this.customerViewText = customerViewText;
         this.insuranceCardViewText = insuranceCardViewText;
+        this.claimViewText = claimViewText;
         this.scanner = DataInput.getDataInput().getScanner();
     }
 
@@ -166,36 +171,173 @@ public class SystemManager implements ClaimProcessManager{
         System.out.println("Insurance card [" + cardNumber + "] has been deleted.");
         return true;
     }
+    public InsuranceCard findInsuranceCardByCardNumber(String cardNumber) {
+        for (InsuranceCard card : insuranceCards) {
+            if (card.getCardNumber().equals(cardNumber)) {
+                return card;
+            }
+        }
+        return null;
+    }
 
     // claim management operations
     @Override
-    public boolean add(Claim claim) {
-        return claims.add(claim);
+    public void addClaim() {
+        System.out.println("Enter insurance card number: ");
+        String cardNumber = scanner.nextLine();
+
+        InsuranceCard insuranceCard = findInsuranceCardByCardNumber(cardNumber);
+        if (insuranceCard == null) {
+            System.out.println("Insurance Card [" + cardNumber + "] is not found.");
+            return;
+        }
+
+        System.out.println("Enter the exam date (yyyy-mm-dd): ");
+        LocalDate examDate;
+        try {
+            examDate = LocalDate.parse(scanner.nextLine());
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date format.");
+            return;
+        }
+
+        if (examDate.isAfter(LocalDate.now())) {
+            System.out.println("The exam date cannot be in the future.");
+            return;
+        }
+
+        System.out.println("Enter the claim amount (USD):");
+        BigDecimal claimAmount;
+        try {
+            claimAmount = new BigDecimal(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid claim amount format.");
+            return;
+        }
+
+        Claim newClaim = new Claim(insuranceCard, examDate, claimAmount);
+        claims.add(newClaim);
+        claimViewText.view(newClaim);
+        System.out.println("Claim added successfully.");
     }
 
     @Override
-    public boolean update(Claim claim) {
+    public boolean updateClaim(String fID) {
+        Claim claimToUpdate = findClaimByID(fID);
+        if (claimToUpdate == null) {
+            System.out.println("Claim not found.");
+            return false;
+        }
+
+        boolean updateAnother = true;
+        while (updateAnother) {
+            System.out.println("Choose what you want to update.");
+            System.out.println("1. Exam date");
+            System.out.println("2. Claim amount");
+            System.out.println("3. Status");
+            System.out.println("4. Receiver Banking Information");
+            System.out.println("5. Add a document");
+            System.out.println("6. Finish updating");
+
+            int response = Integer.parseInt(scanner.nextLine());
+            switch (response) {
+                case 1:
+                    System.out.println("Enter new exam date (yyyy-mm-dd): ");
+                    LocalDate newDate = LocalDate.parse(scanner.nextLine());
+                    claimToUpdate.setExamDate(newDate);
+                    System.out.println("Exam date updated.");
+                    break;
+                case 2:
+                    System.out.println("Enter new claim amount: ");
+                    BigDecimal newClaimAmount = scanner.nextBigDecimal();
+                    claimToUpdate.setClaimAmount(newClaimAmount);
+                    System.out.println("Claim amount updated.");
+                    break;
+                case 3:
+                    System.out.println("Please select new status: ");
+                    System.out.println("1. PROCESSING");
+                    System.out.println("2. DONE");
+
+                    int choice = Integer.parseInt(scanner.nextLine());
+                    ClaimStatus newStatus = null;
+
+                    switch (choice) {
+                        case 1:
+                            newStatus = ClaimStatus.PROCESSING;
+                            break;
+                        case 2:
+                            newStatus = ClaimStatus.DONE;
+                            break;
+                        default:
+                            System.out.println("Invalid input. Please try again.");
+                            break;
+                    }
+
+                    if (newStatus != null) {
+                        claimToUpdate.setStatus(newStatus);
+                        System.out.println("Claim status updated.");
+                    }
+                    break;
+                case 4:
+                    System.out.println("Enter new receiver banking information (bank, name, number): ");
+                    String[] bankingInfo = scanner.nextLine().split(",");
+                    if (bankingInfo.length != 3) {
+                        System.out.println("Invalid input format. Please provide bank, name, and number separated by commas.");
+                        break;
+                    }
+                    String bank = bankingInfo[0].trim();
+                    String name = bankingInfo[1].trim();
+                    String number = bankingInfo[2].trim();
+                    claimToUpdate.setReceiverBankingInfo(bank, name, number);
+                    System.out.println("Receiver banking information updated.");
+                    break;
+                case 5:
+                    System.out.println("Enter new document name: ");
+                    String newDocumentName = scanner.nextLine();
+                    claimToUpdate.addDocument(newDocumentName);
+                    break;
+                case 6:
+                    updateAnother = false;
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please choose again.");
+            }
+        }
+
+        return true;
+    }
+
+
+    @Override
+    public boolean deleteClaim(String fID) {
+        Claim claim = findClaimByID(fID);
+        if (claim != null) {
+            claims.remove(claim);
+            return true;
+        }
+
         return false;
     }
 
     @Override
-    public boolean delete(Claim claim) {
-        return claims.remove(claim);
+    public void getOneClaim(String fID) {
+        Claim claim = findClaimByID(fID);
+        claimViewText.view(claim);
     }
 
     @Override
-    public Claim getOne(String fID) {
-        for (Claim claim: claims) {
+    public void getAllClaims() {
+        for (Claim claim : claims) {
+            claimViewText.view(claim);
+        }
+    }
+    public Claim findClaimByID(String fID) {
+        for (Claim claim : claims) {
             if (claim.getFID().equals(fID)) {
                 return claim;
             }
         }
 
         return null;
-    }
-
-    @Override
-    public List<Claim> getAll() {
-        return claims;
     }
 }
