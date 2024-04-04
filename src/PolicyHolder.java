@@ -17,4 +17,8 @@ public class PolicyHolder extends Customer {
     public boolean removeDependent(Dependent dependent) {
         return false;
     }
+
+    public List<Dependent> getDependentList() {
+        return dependentList;
+    }
 }

@@ -9,4 +9,8 @@ public class Dependent extends Customer {
         super(fullName);
         this.policyHolder = policyHolder;
     }
+
+    public PolicyHolder getPolicyHolder() {
+        return policyHolder;
+    }
 }

@@ -11,6 +11,12 @@ public class InsuranceCard {
     private LocalDate expirationDate;
     private static int nextCardNumber = 1;
 
+    public InsuranceCard(Customer cardHolder) {
+        this.cardNumber = generateCardNumber();
+        this.cardHolder = cardHolder;
+        this.cardNumber = generateCardNumber();
+    }
+
     public InsuranceCard(Customer cardHolder, String policyOwner, LocalDate expirationDate) {
         this.cardNumber = generateCardNumber();
         this.cardHolder = cardHolder;
@@ -22,6 +28,18 @@ public class InsuranceCard {
         String cardNumber = String.format("%010d", nextCardNumber);
         nextCardNumber++;
         return cardNumber;
+    }
+
+    public void setCardHolder(Customer cardHolder) {
+        this.cardHolder = cardHolder;
+    }
+
+    public void setPolicyOwner(String policyOwner) {
+        this.policyOwner = policyOwner;
+    }
+
+    public void setExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
     }
 
     public String getCardNumber() {

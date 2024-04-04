@@ -4,7 +4,7 @@
 
 import java.util.List;
 
-public abstract class Customer extends SystemManager{
+public abstract class Customer{
     private String cID;
     private String fullName;
     private InsuranceCard insuranceCard;
@@ -26,7 +26,7 @@ public abstract class Customer extends SystemManager{
     }
 
     // check if customer already has an insurance card
-    public boolean hasInsuranceCard() {
+    public boolean setInsuranceCard(InsuranceCard insuranceCard) {
         // logic to add card or create card --> true
         return false;
     }

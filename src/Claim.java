@@ -19,10 +19,10 @@ public class Claim {
     private String receiverBankingInfo;
     private static int nextFID = 1;
 
-    public Claim(Customer insuredPerson, InsuranceCard cardNumber, LocalDate examDate, BigDecimal claimAmount) {
+    public Claim(InsuranceCard cardNumber, LocalDate examDate, BigDecimal claimAmount) {
         this.fID = generateFID();
         this.claimDate = LocalDate.now();
-        this.insuredPerson = insuredPerson;
+        setInsuredPerson();
         this.cardNumber = cardNumber;
         this.examDate = examDate;
         this.documentList = new ArrayList<>();
@@ -45,8 +45,29 @@ public class Claim {
     }
 
     public void setReceiverBankingInfo(String bank, String name, String number) {
-        String bankingInfo = bank + " - " + name + " - " + number;
-        this.receiverBankingInfo = bankingInfo;
+        this.receiverBankingInfo = bank + " - " + name + " - " + number;;
+    }
+
+    public void setInsuredPerson() {
+        this.insuredPerson = cardNumber.getCardHolder();
+    }
+
+    public void setCardNumber(InsuranceCard cardNumber) {
+        this.cardNumber = cardNumber;
+        setInsuredPerson();
+    }
+
+    public void setExamDate(LocalDate examDate) {
+        this.examDate = examDate;
+    }
+
+
+    public void setClaimAmount(BigDecimal claimAmount) {
+        this.claimAmount = claimAmount;
+    }
+
+    public void setStatus(ClaimStatus status) {
+        this.status = status;
     }
 
     public String getFID() {
