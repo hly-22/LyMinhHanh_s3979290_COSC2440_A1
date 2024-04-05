@@ -3,6 +3,7 @@
  */
 
 import java.math.BigDecimal;
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -11,25 +12,41 @@ import java.util.Scanner;
 
 
 public class SystemManager implements ClaimProcessManager{
-    private List<Customer> customers;
     private List<InsuranceCard> insuranceCards;
     private List<Claim> claims;
     CustomerViewText customerViewText;
     InsuranceCardViewText insuranceCardViewText;
     ClaimViewText claimViewText;
-    Scanner scanner;
+    private Scanner scanner;
+    private FileManager fileManager;
     public SystemManager(CustomerViewText customerViewText, InsuranceCardViewText insuranceCardViewText, ClaimViewText claimViewText) {
-        this.customers = new ArrayList<>();
         this.insuranceCards = new ArrayList<>();
         this.claims = new ArrayList<>();
         this.customerViewText = customerViewText;
         this.insuranceCardViewText = insuranceCardViewText;
         this.claimViewText = claimViewText;
         this.scanner = DataInput.getDataInput().getScanner();
+        this.fileManager = new FileManager();
     }
 
     // customer management operations
+    private boolean isValidCIDFormat(String cID) {
+        String regex = "^c-[0-9]{7}$"; // c- followed by exactly 7 digits
+        return cID.matches(regex);
+    }
     public void addCustomer() {
+
+        System.out.println("Enter a valid cID (c-xxxxxxx): ");
+        String cID = scanner.nextLine();
+        if (!isValidCIDFormat(cID)) {
+            System.out.println("Invalid customer ID format.");
+            return;
+        }
+        if (fileManager.findCustomerByID(cID) != null) {
+            System.out.println("CID already exists.");
+            return;
+        }
+
 
         System.out.println("Enter full name: ");
         String fullName = scanner.nextLine();
@@ -37,66 +54,63 @@ public class SystemManager implements ClaimProcessManager{
         System.out.println("Enter a customer type (PolicyHolder or Dependent): ");
         String customerType = scanner.nextLine();
 
-        while (!customerType.equalsIgnoreCase("PolicyHolder") && !customerType.equalsIgnoreCase("Dependent")) {
-            System.out.println("Invalid customer type. Please enter 'PolicyHolder' or 'Dependent'.");
-            customerType = scanner.nextLine();
+        if (!customerType.equalsIgnoreCase("PolicyHolder") && !customerType.equalsIgnoreCase("Dependent")) {
+            System.out.println("Invalid customer type.");
+            return;
         }
         customerType = customerType.toLowerCase();
 
-
         if (customerType.equals("dependent")) {
-            Customer policyHolder = null;
-            boolean isValidCID = false;
+            System.out.println("Enter your PolicyHolder's cID (c-xxxxxxx): ");
+            String pCID = scanner.nextLine();
 
-            while (!isValidCID) {
-                System.out.println("Enter your PolicyHolder's cID (c-xxxxxxx): ");
-                String pCID = scanner.nextLine();
-
-                for (Customer customer : customers) {
-                    if (customer instanceof PolicyHolder && customer.getCID().equals(pCID)) {
-                        policyHolder = customer;
-                        isValidCID = true;
-                        break;
-                    }
-                }
-
-                if (!isValidCID) {
-                    System.out.println("cID [" + pCID + "] is not found in the system. Please enter a different cID.");
-                }
+            Customer policyHolderDependent = fileManager.findCustomerByID(pCID);
+            if (policyHolderDependent == null) {
+                System.out.println("cID [" + pCID + "] is not found.");
+                return;
             }
 
-            Customer newDependent = new Dependent(fullName, (PolicyHolder) policyHolder);
+            String policyHolder = policyHolderDependent.getCID();
+
+            Customer newDependent = new Dependent(cID, fullName, policyHolder);
             customerViewText.view((Dependent) newDependent);
-            customers.add(newDependent);
+            ((PolicyHolder) policyHolderDependent).addDependent((Dependent) newDependent);
+            customerViewText.view((PolicyHolder) policyHolderDependent);
+            fileManager.addCustomer(newDependent, policyHolderDependent);
             return;
         }
 
-        Customer newPolicyHolder = new PolicyHolder(fullName);
+        Customer newPolicyHolder = new PolicyHolder(cID, fullName);
         customerViewText.view((PolicyHolder) newPolicyHolder);
-        customers.add(newPolicyHolder);
+        fileManager.addCustomer(newPolicyHolder, null);
     }
 
-    public boolean deleteCustomer(String cID) {
-        for (Customer customer : customers) {
-            if (customer.getCID().equals(cID)) {
-                customers.remove(customer);
-                System.out.println("Customer with cID [" + cID + "] has been deleted.");
-                return true;
+    public void deleteCustomer() {
+        System.out.println("Enter the customer cID you want to delete (c-xxxxxxx): ");
+        String cID = scanner.nextLine();
+
+        Customer customerToDelete = fileManager.findCustomerByID(cID);
+        if (customerToDelete != null) {
+            if (customerToDelete instanceof PolicyHolder) {
+                PolicyHolder policyHolder = (PolicyHolder) customerToDelete;
+                System.out.println("Deleting this policy holder will also delete all their dependents. Proceed? (yes or no)");
+                String response = scanner.nextLine().trim().toLowerCase();
+
+                if (!response.equals("yes")) {
+                    System.out.println("Deletion cancelled.");
+                    return;
+                }
+
+                for (String dependentCID : policyHolder.getDependentList()) {
+                    fileManager.deleteCustomer(dependentCID);
+                }
             }
+            fileManager.deleteCustomer(cID);
+            System.out.println("Customer with cID [" + cID + "] has been deleted.");
+        } else {
+            System.out.println("Customer with cID [" + cID + "] is not found.");
         }
-
-        System.out.println("Customer with cID [" + cID + "] is not found. Please enter a different cID.");
-        return false;
     }
-    private Customer findCustomerByID(String cID) {
-        for (Customer customer : customers) {
-            if (customer.getCID().equals(cID)) {
-                return customer;
-            }
-        }
-        return null;
-    }
-
 
     // insurance card management operations
     public boolean addInsuranceCard() {
@@ -111,7 +125,7 @@ public class SystemManager implements ClaimProcessManager{
         System.out.println("Enter cID: ");
         String cID = scanner.nextLine();
 
-        Customer customer = findCustomerByID(cID);
+        Customer customer = fileManager.findCustomerByID(cID);
 
         if (customer == null) {
             System.out.println("Customer with cID [" + cID + "] is not found.");
@@ -125,20 +139,31 @@ public class SystemManager implements ClaimProcessManager{
 
         InsuranceCard insuranceCard = new InsuranceCard(customer);
 
+        System.out.println("Enter the expiration date (yyyy-MM-dd):");
+        LocalDate expirationDate;
+        try {
+            expirationDate = LocalDate.parse(scanner.nextLine());
+            if (expirationDate.isBefore(LocalDate.now())) {
+                System.out.println("Expiration date cannot be in the past.");
+                return false;
+            }
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date input. Please try again.");
+            return false;
+        }
+
         if (customer instanceof PolicyHolder) {
             System.out.println("Enter the policy owner:");
             String policyOwner = scanner.nextLine();
-            System.out.println("Enter the expiration date (yyyy-MM-dd):");
-            LocalDate expirationDate = LocalDate.parse(scanner.nextLine());
 
             insuranceCard.setPolicyOwner(policyOwner);
             insuranceCard.setExpirationDate(expirationDate);
         } else if (customer instanceof Dependent) {
-            String policyOwner = ((Dependent) customer).getPolicyHolder().getInsuranceCard().getPolicyOwner();
-            insuranceCard.setPolicyOwner(policyOwner);
+            String policyHolderDependent = ((Dependent) customer).getPolicyHolder();
+            Customer policyOwnerObject = fileManager.findCustomerByID(policyHolderDependent);
+            String policyOwner = policyOwnerObject.getInsuranceCard().getPolicyOwner();
 
-            System.out.println("Enter the expiration date (yyyy-MM-dd):");
-            LocalDate expirationDate = LocalDate.parse(scanner.nextLine());
+            insuranceCard.setPolicyOwner(policyOwner);
             insuranceCard.setExpirationDate(expirationDate);
         }
 
@@ -171,14 +196,6 @@ public class SystemManager implements ClaimProcessManager{
         System.out.println("Insurance card [" + cardNumber + "] has been deleted.");
         return true;
     }
-    public InsuranceCard findInsuranceCardByCardNumber(String cardNumber) {
-        for (InsuranceCard card : insuranceCards) {
-            if (card.getCardNumber().equals(cardNumber)) {
-                return card;
-            }
-        }
-        return null;
-    }
 
     // claim management operations
     @Override
@@ -186,9 +203,10 @@ public class SystemManager implements ClaimProcessManager{
         System.out.println("Enter insurance card number: ");
         String cardNumber = scanner.nextLine();
 
-        InsuranceCard insuranceCard = findInsuranceCardByCardNumber(cardNumber);
+        InsuranceCard insuranceCard = fileManager.findInsuranceCardByCardNumber(cardNumber);
         if (insuranceCard == null) {
             System.out.println("Insurance Card [" + cardNumber + "] is not found.");
+            System.out.println("Please enter a valid insurance card number or create one to add claim.");
             return;
         }
 
@@ -223,7 +241,7 @@ public class SystemManager implements ClaimProcessManager{
 
     @Override
     public boolean updateClaim(String fID) {
-        Claim claimToUpdate = findClaimByID(fID);
+        Claim claimToUpdate = fileManager.findClaimByID(fID);
         if (claimToUpdate == null) {
             System.out.println("Claim not found.");
             return false;
@@ -310,7 +328,7 @@ public class SystemManager implements ClaimProcessManager{
 
     @Override
     public boolean deleteClaim(String fID) {
-        Claim claim = findClaimByID(fID);
+        Claim claim = fileManager.findClaimByID(fID);
         if (claim != null) {
             claims.remove(claim);
             return true;
@@ -321,7 +339,7 @@ public class SystemManager implements ClaimProcessManager{
 
     @Override
     public void getOneClaim(String fID) {
-        Claim claim = findClaimByID(fID);
+        Claim claim = fileManager.findClaimByID(fID);
         claimViewText.view(claim);
     }
 
@@ -331,13 +349,5 @@ public class SystemManager implements ClaimProcessManager{
             claimViewText.view(claim);
         }
     }
-    public Claim findClaimByID(String fID) {
-        for (Claim claim : claims) {
-            if (claim.getFID().equals(fID)) {
-                return claim;
-            }
-        }
 
-        return null;
-    }
 }

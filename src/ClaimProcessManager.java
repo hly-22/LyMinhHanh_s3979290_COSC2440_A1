@@ -5,11 +5,11 @@
 import java.util.List;
 
 public interface ClaimProcessManager {
-    public void addClaim();
-    public boolean updateClaim(String fID);
-    public boolean deleteClaim(String fID);
-    public void getOneClaim(String fID);
-    public void getAllClaims();
+    void addClaim();
+    boolean updateClaim(String fID);
+    boolean deleteClaim(String fID);
+    void getOneClaim(String fID);
+    void getAllClaims();
 
 
 }

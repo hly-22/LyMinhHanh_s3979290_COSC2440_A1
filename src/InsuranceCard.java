@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 public class InsuranceCard {
     private String cardNumber;
-    private Customer cardHolder;            // only one cardholder
+    private Customer cardHolder;
     private String policyOwner;
     private LocalDate expirationDate;
     private static int nextCardNumber = 1;
@@ -17,21 +17,10 @@ public class InsuranceCard {
         this.cardNumber = generateCardNumber();
     }
 
-    public InsuranceCard(Customer cardHolder, String policyOwner, LocalDate expirationDate) {
-        this.cardNumber = generateCardNumber();
-        this.cardHolder = cardHolder;
-        this.policyOwner = policyOwner;
-        this.expirationDate = expirationDate;
-    }
-
     protected synchronized String generateCardNumber() {
         String cardNumber = String.format("%010d", nextCardNumber);
         nextCardNumber++;
         return cardNumber;
-    }
-
-    public void setCardHolder(Customer cardHolder) {
-        this.cardHolder = cardHolder;
     }
 
     public void setPolicyOwner(String policyOwner) {

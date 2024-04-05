@@ -11,24 +11,22 @@ public abstract class Customer{
     private List<Claim> claimList;
     private static int nextCID = 1;
 
-    public Customer(String fullName) {
-        this.cID = generateCID();
+    public Customer(String cID, String fullName) {
+        this.cID = cID;
         this.fullName = fullName;
         this.insuranceCard = null;
         this.claimList = null;
     }
 
-    // generate unique cID
-    protected synchronized String generateCID() {
-        String CID = "c-" + String.format("%07d", nextCID);
-        nextCID++;
-        return CID;
+    public Customer(String cID, String fullName, InsuranceCard insuranceCard, List<Claim> claimList) {
+        this.cID = cID;
+        this.fullName = fullName;
+        this.insuranceCard = null;
+        this.claimList = null;
     }
 
-    // check if customer already has an insurance card
-    public boolean setInsuranceCard(InsuranceCard insuranceCard) {
-        // logic to add card or create card --> true
-        return false;
+    public void setInsuranceCard(InsuranceCard insuranceCard) {
+        this.insuranceCard = insuranceCard;
     }
 
     public String getCID() {
@@ -39,11 +37,18 @@ public abstract class Customer{
         return fullName;
     }
 
+
     public InsuranceCard getInsuranceCard() {
         return insuranceCard;
     }
 
+    public String getCardNumber() {
+        if (insuranceCard != null) {
+            return insuranceCard.getCardNumber();
+        }
+        return null;
+    }
     public List<Claim> getClaimList() {
-        return claimList;
+        return claimList; // work on this
     }
 }
