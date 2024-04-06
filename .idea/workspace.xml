@@ -6,16 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="eff0adab-e8db-44b0-8d70-c0ff291dafe9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Claim.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Claim.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ClaimViewText.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClaimViewText.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Customer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Dependent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Dependent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CustomerViewText.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomerViewText.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FileManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FileManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/InsuranceCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/InsuranceCard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MainMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PolicyHolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PolicyHolder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/InsuranceCardViewText.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/InsuranceCardViewText.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SystemManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SystemManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/claims.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/claims.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/customers.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/customers.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/insurance_cards.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/insurance_cards.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +75,7 @@
       <workItem from="1712286574839" duration="6505000" />
       <workItem from="1712322321793" duration="22528000" />
       <workItem from="1712380570652" duration="10023000" />
-      <workItem from="1712392995850" duration="3697000" />
+      <workItem from="1712392995850" duration="19671000" />
     </task>
     <servers />
   </component>
@@ -108,13 +108,26 @@
           <properties class="java.lang.StackOverflowError" package="java.lang" />
           <option name="timeStamp" value="3" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/SystemManager.java</url>
+          <line>33</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/FileManager.java</url>
+          <line>253</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/FileManager.java</url>
+          <line>236</line>
+          <properties class="FileManager" method="getClaimListFromString">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-    <pin-to-top-manager>
-      <pinned-members>
-        <PinnedItemInfo parentTag="PolicyHolder" memberName="cID" />
-        <PinnedItemInfo parentTag="Dependent" memberName="cID" />
-      </pinned-members>
-    </pin-to-top-manager>
   </component>
 </project>

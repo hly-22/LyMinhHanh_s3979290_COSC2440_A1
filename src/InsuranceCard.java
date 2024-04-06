@@ -29,6 +29,9 @@ public class InsuranceCard {
         this.expirationDate = expirationDate;
     }
 
+    public InsuranceCard() {
+    }
+
 
     public void setPolicyOwner(String policyOwner) {
         this.policyOwner = policyOwner;
@@ -43,6 +46,9 @@ public class InsuranceCard {
     }
 
     public String getPolicyOwner() {
+        if (policyOwner == null) {
+            return null;
+        }
         return policyOwner;
     }
 

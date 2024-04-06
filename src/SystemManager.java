@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 
 public class SystemManager implements ClaimProcessManager{
-    private FileManager fileManager;
+    private final FileManager fileManager;
     private List<Customer> customers;
     private List<InsuranceCard> insuranceCards;
     private List<Claim> claims;
@@ -39,6 +39,7 @@ public class SystemManager implements ClaimProcessManager{
     public void shutDownSystem() {
         fileManager.writeAllCustomers(customers);
         fileManager.writeAllInsuranceCards(insuranceCards);
+        fileManager.writeAllClaims(claims);
     }
 
     // customer management operations
@@ -106,67 +107,13 @@ public class SystemManager implements ClaimProcessManager{
 
         customerViewText.view((PolicyHolder) newPolicyHolder);
     }
-
-// add customer old one
-//    public void addCustomer() {
-//
-//        System.out.println("Enter a valid cID (c-xxxxxxx): ");
-//        String cID = scanner.nextLine();
-//        if (!isValidCIDFormat(cID)) {
-//            System.out.println("Invalid customer ID format.");
-//            return;
-//        }
-//        if (fileManager.findCustomerByID(cID) != null) {
-//            System.out.println("CID already exists.");
-//            return;
-//        }
-//
-//
-//        System.out.println("Enter full name: ");
-//        String fullName = scanner.nextLine();
-//
-//        System.out.println("Enter a customer type (PolicyHolder or Dependent): ");
-//        String customerType = scanner.nextLine();
-//
-//        if (!customerType.equalsIgnoreCase("PolicyHolder") && !customerType.equalsIgnoreCase("Dependent")) {
-//            System.out.println("Invalid customer type.");
-//            return;
-//        }
-//        customerType = customerType.toLowerCase();
-//
-//        if (customerType.equals("dependent")) {
-//            System.out.println("Enter your PolicyHolder's cID (c-xxxxxxx): ");
-//            String pCID = scanner.nextLine();
-//
-//            Customer policyHolderDependent = fileManager.findCustomerByID(pCID);
-//            if (policyHolderDependent == null) {
-//                System.out.println("cID [" + pCID + "] is not found.");
-//                return;
-//            }
-//
-//            String policyHolder = policyHolderDependent.getCID();
-//
-//            Customer newDependent = new Dependent(cID, fullName, policyHolder);
-//            customerViewText.view((Dependent) newDependent);
-//            ((PolicyHolder) policyHolderDependent).addDependent((Dependent) newDependent);
-//            customerViewText.view((PolicyHolder) policyHolderDependent);
-//            fileManager.addCustomer(newDependent, policyHolderDependent);
-//            return;
-//        }
-//
-//        Customer newPolicyHolder = new PolicyHolder(cID, fullName);
-//        customerViewText.view((PolicyHolder) newPolicyHolder);
-//        fileManager.addCustomer(newPolicyHolder, null);
-//    }
-
     public void deleteCustomer() {
         System.out.println("Enter the customer cID you want to delete (c-xxxxxxx): ");
         String cID = scanner.nextLine();
 
         Customer customerToDelete = findCustomerByID(cID);
         if (customerToDelete != null) {
-            if (customerToDelete instanceof PolicyHolder) {
-                PolicyHolder policyHolder = (PolicyHolder) customerToDelete;
+            if (customerToDelete instanceof PolicyHolder policyHolder) {
                 System.out.println("Deleting this policy holder will also delete all their dependents. Proceed? (yes or no)");
                 String response = scanner.nextLine().trim().toLowerCase();
 
@@ -267,6 +214,10 @@ public class SystemManager implements ClaimProcessManager{
             String policyHolderDependent = ((Dependent) customer).getPolicyHolder();
             Customer policyOwnerObject = findCustomerByID(policyHolderDependent);
             String policyOwnerObjectInsuranceCard = policyOwnerObject.getInsuranceCardNumber();
+            if (policyOwnerObjectInsuranceCard.equals("null")) {
+                System.out.println("Your policy holder must have an insurance card first.");
+                return;
+            }
             String policyOwner = findInsuranceCardByCardNumber(policyOwnerObjectInsuranceCard).getPolicyOwner();
             insuranceCard.setPolicyOwner(policyOwner);
         }
@@ -293,8 +244,31 @@ public class SystemManager implements ClaimProcessManager{
     }
 
     // claim management operations
+    private boolean isValidFIDFormat(String cID) {
+        String regex = "^f-[0-9]{10}$"; // c- followed by exactly 7 digits
+        return cID.matches(regex);
+    }
+    public Claim findClaimByID(String fID) {
+        for (Claim claim : claims) {
+            if (claim.getFID().equals(fID)) {
+                return claim;
+            }
+        }
+        return null;
+    }
     @Override
     public void addClaim() {
+        System.out.println("Enter a valid fID (f-xxxxxxxxxx): ");
+        String fID = scanner.nextLine();
+        if (!isValidFIDFormat(fID)) {
+            System.out.println("Invalid claim ID format.");
+            return;
+        }
+        if (findClaimByID(fID) != null) {
+            System.out.println("FID already exists.");
+            return;
+        }
+
         System.out.println("Enter insurance card number: ");
         String cardNumber = scanner.nextLine();
 
@@ -318,7 +292,7 @@ public class SystemManager implements ClaimProcessManager{
             return;
         }
 
-        System.out.println("Enter the claim amount (USD):");
+        System.out.println("Enter the claim amount (USD xx.xx):");
         BigDecimal claimAmount;
         try {
             claimAmount = new BigDecimal(scanner.nextLine());
@@ -327,19 +301,52 @@ public class SystemManager implements ClaimProcessManager{
             return;
         }
 
-        Claim newClaim = new Claim(insuranceCard, examDate, claimAmount);
+        Claim newClaim = new Claim(fID, insuranceCard, examDate, claimAmount);
+        Customer customer = findCustomerByID(findInsuranceCardByCardNumber(cardNumber).getCardHolder());
+        customer.addToClaimList(newClaim);
+
+        System.out.println("Do you want to add any documents? (yes or no)");
+        String response = scanner.nextLine().trim();
+
+        if (response.equalsIgnoreCase("yes")) {
+            boolean hasDocument = true;
+            while (hasDocument) {
+                System.out.println("Enter the name of the document with no space.");
+                System.out.println("Or enter 'Done' when no more adding.");
+                String documentName = scanner.nextLine();
+
+                if (documentName.equalsIgnoreCase("done")) {
+                    hasDocument = false;
+                } else {
+                    newClaim.addDocument(documentName);
+                }
+            }
+        }
+
+        System.out.println("Enter receiver banking information in the following format:");
+        System.out.println("bank, name, number");
+
+        try {
+            String input = scanner.nextLine();
+            String[] parts = input.split(",");
+            if (parts.length < 3) {
+                System.out.println("Invalid input. Please make sure you provide all required information.");
+                return;
+            }
+            String bank = parts[0].trim();
+            String name = parts[1].trim();
+            String number = parts[2].trim();
+
+            newClaim.setReceiverBankingInfo(bank, name, number);
+
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Invalid input. Please make sure you provide all required information.");
+            return;
+        }
+
         claims.add(newClaim);
         claimViewText.view(newClaim);
     }
-    public Claim findClaimByID(String fID) {
-        for (Claim claim : claims) {
-            if (claim.getFID().equals(fID)) {
-                return claim;
-            }
-        }
-        return null;
-    }
-
     @Override
     public boolean updateClaim(String fID) {
         Claim claimToUpdate = findClaimByID(fID);

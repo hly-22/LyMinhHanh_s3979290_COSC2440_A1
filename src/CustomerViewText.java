@@ -4,7 +4,6 @@
 
 public class CustomerViewText {
     public void view(Dependent dependent) {
-        System.out.println();
         System.out.println("============================");
         System.out.println("Dependent");
         System.out.println("CID: " + dependent.getCID());
@@ -14,7 +13,6 @@ public class CustomerViewText {
         System.out.println();
     }
     public void view(PolicyHolder policyHolder) {
-        System.out.println();
         System.out.println("============================");
         System.out.println("Policy Holder");
         System.out.println("CID: " + policyHolder.getCID());

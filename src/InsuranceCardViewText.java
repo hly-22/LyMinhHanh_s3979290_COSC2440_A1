@@ -4,7 +4,6 @@
 
 public class InsuranceCardViewText {
     public void view(InsuranceCard insuranceCard) {
-        System.out.println();
         System.out.println("============================");
         System.out.println("Card holder: " + insuranceCard.getCardHolder());
         System.out.println("Card number: " + insuranceCard.getCardNumber());

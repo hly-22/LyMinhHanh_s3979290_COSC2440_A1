@@ -2,6 +2,7 @@
  * @author <Ly Minh Hanh - s3979290>
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Customer{
@@ -14,14 +15,14 @@ public abstract class Customer{
         this.cID = cID;
         this.fullName = fullName;
         this.insuranceCardNumber = null;
-        this.claimList = null;
+        this.claimList = new ArrayList<>();
     }
 
     public Customer(String cID, String fullName, String insuranceCardNumber, List<Claim> claimList) {
         this.cID = cID;
         this.fullName = fullName;
         this.insuranceCardNumber = insuranceCardNumber;
-        this.claimList = null;
+        this.claimList = claimList;
     }
 
     public void setInsuranceCard(String insuranceCardNumber) {
@@ -48,4 +49,7 @@ public abstract class Customer{
         this.insuranceCardNumber = String;
     }
 
+    public boolean addToClaimList(Claim claim) {
+        return claimList.add(claim);
+    }
 }
