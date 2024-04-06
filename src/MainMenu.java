@@ -1,10 +1,8 @@
-import java.sql.SQLOutput;
-import java.util.Scanner;
-
 /**
  * @author <Ly Minh Hanh - s3979290>
  */
 
+import java.util.Scanner;
 public class MainMenu {
     SystemManager systemManager;
     Scanner scanner;
@@ -38,25 +36,29 @@ public class MainMenu {
             System.out.println("9. Read all claims");
             System.out.println("0. Exit");
 
-            int response = Integer.parseInt(scanner.nextLine());
-            switch (response) {
-                case 1 -> systemManager.addCustomer();
-                case 2 -> systemManager.deleteCustomer();
-                case 3 -> systemManager.addInsuranceCard();
-                case 4 -> systemManager.deleteInsuranceCard();
-                case 5 -> systemManager.addClaim();
-                case 6 -> systemManager.updateClaim();
-                case 7 -> systemManager.deleteClaim();
-                case 8 -> systemManager.getOneClaim();
-                case 9 -> systemManager.getAllClaims();
-                case 0 -> {
-                    System.out.println();
-                    System.out.println("=====================");
-                    System.out.println("= SEE YOU NEXT TIME =");
-                    System.out.println("=====================");
-                    exit = true;
+            try {
+                int response = Integer.parseInt(scanner.nextLine());
+                switch (response) {
+                    case 1 -> systemManager.addCustomer();
+                    case 2 -> systemManager.deleteCustomer();
+                    case 3 -> systemManager.addInsuranceCard();
+                    case 4 -> systemManager.deleteInsuranceCard();
+                    case 5 -> systemManager.addClaim();
+                    case 6 -> systemManager.updateClaim();
+                    case 7 -> systemManager.deleteClaim();
+                    case 8 -> systemManager.getOneClaim();
+                    case 9 -> systemManager.getAllClaims();
+                    case 0 -> {
+                        System.out.println();
+                        System.out.println("=====================");
+                        System.out.println("= SEE YOU NEXT TIME =");
+                        System.out.println("=====================");
+                        exit = true;
+                    }
+                    default -> System.out.println("Invalid option. Please try again");
                 }
-                default -> System.out.println("Invalid option. Please try again");
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid option. Please try again");
             }
         }
 
