@@ -1,3 +1,7 @@
+/**
+ * @author <Ly Minh Hanh - s3979290>
+ */
+
 import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -45,14 +49,14 @@ public class FileManager {
         String cID = tokens[1];
         String fullName = tokens[2];
         String cardNumber = tokens[3];
-//      List<Claim> claimList = getClaimListFromString(tokens[4]);
+        List<Claim> claimList = getClaimListFromString(tokens[4]);
 
         if (tokens[0].equals("Policy Holder")) {
             List<String> dependentList = getDependentsFromString(tokens[5]);
-            return new PolicyHolder(cID, fullName, cardNumber, null, dependentList);
+            return new PolicyHolder(cID, fullName, cardNumber, claimList, dependentList);
         } else {
             String policyHolder = tokens[5];
-            return new Dependent(cID, fullName, cardNumber, null, policyHolder);
+            return new Dependent(cID, fullName, cardNumber, claimList, policyHolder);
         }
     }
 
@@ -206,7 +210,7 @@ public class FileManager {
                         claim.getInsuredPerson(),
                         claim.getCardNumber().getCardNumber(),
                         claim.getExamDate().toString(),
-                        claim.getDocumentList().toString(),
+                        getDocumentListAsString(claim.getDocumentList()),
                         "USD " + claim.getClaimAmount().toString(),
                         claim.getStatus().toString(),
                         claim.getReceiverBankingInfo());
@@ -217,7 +221,7 @@ public class FileManager {
         }
     }
 
-    // Helper Methods
+    // Claim List-String Conversion Methods
     private static String getClaimListAsString(List<Claim> claimList) {
         if (claimList == null || claimList.isEmpty()) {
             return "null";
@@ -225,15 +229,47 @@ public class FileManager {
 
         StringBuilder stringBuilder = new StringBuilder();
         for (Claim claim : claimList) {
-            stringBuilder.append(claim.getFID()).append(LIST_DELIMITER);
+            stringBuilder.append(claim.getFID()).append("/");
         }
 
-        if (stringBuilder.length() > 0) {
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        }
+        // Remove the last delimiter ("/") if it exists
+        stringBuilder.setLength(stringBuilder.length() - 1);
+
         return stringBuilder.toString();
     }
 
+    private List<Claim> getClaimListFromString(String claimListString) {
+        List<Claim> claims = new ArrayList<>();
+        if (claimListString.isEmpty() || claimListString == null) {
+            return claims;
+        }
+        String[] claimIDs = claimListString.split(LIST_DELIMITER);
+        for (String claimID : claimIDs) {
+            for (Claim claim : readAllClaims()) {
+                if (claim.getFID().equals(claimID)) {
+                    claims.add(claim);
+                }
+            }
+//            Claim claim = findClaimByID(claimID);
+//            if (claim != null) {
+//                claims.add(claim);
+//            }
+        }
+        return claims;
+    }
+
+    // Dependents-String Conversion Methods
+    private List<String> getDependentsFromString(String dependentListString) {
+        List<String> dependents = new ArrayList<>();
+        if (dependentListString == null || dependentListString.isEmpty() || dependentListString.equals("null")) {
+            return dependents;
+        }
+
+        String[] dependentList = dependentListString.split(LIST_DELIMITER);
+        dependents.addAll(Arrays.asList(dependentList));
+
+        return dependents;
+    }
     private static String getDependentsAsString(List<String> dependentList) {
         if (dependentList == null || dependentList.isEmpty()) {
             return "null";
@@ -248,33 +284,7 @@ public class FileManager {
         return stringBuilder.toString();
     }
 
-//    private List<Claim> getClaimListFromString(String claimListString) {
-//        List<Claim> claims = new ArrayList<>();
-//        if (claimListString.isEmpty() || claimListString == null) {
-//            return claims;
-//        }
-//        String[] claimIDs = claimListString.split(LIST_DELIMITER);
-//        for (String claimID : claimIDs) {
-//            // Assuming there's a method to find claim by ID
-//            Claim claim = findClaimByID(claimID);
-//            if (claim != null) {
-//                claims.add(claim);
-//            }
-//        }
-//        return claims;
-//    }
-
-    private List<String> getDependentsFromString(String dependentListString) {
-        List<String> dependents = new ArrayList<>();
-        if (dependentListString == null || dependentListString.isEmpty() || dependentListString.equals("null")) {
-            return dependents;
-        }
-
-        String[] dependentList = dependentListString.split(LIST_DELIMITER);
-        dependents.addAll(Arrays.asList(dependentList));
-
-        return dependents;
-    }
+    // Document List-String Conversion Methods
     private List<String> getDocumentListFromString(String documentListString) {
         List<String> documentList = new ArrayList<>();
         if (documentListString == null || documentListString.isEmpty() || documentListString.equals("null")) {
@@ -285,5 +295,18 @@ public class FileManager {
         documentList.addAll(Arrays.asList(dependentList));
 
         return documentList;
+    }
+    private static String getDocumentListAsString(List<String> documentList) {
+        if (documentList == null || documentList.isEmpty()) {
+            return "null";
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String documentListString : documentList) {
+            stringBuilder.append(documentListString).append(LIST_DELIMITER);
+        }
+
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        return stringBuilder.toString();
     }
 }
