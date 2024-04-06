@@ -17,10 +17,9 @@ public class Claim {
     private BigDecimal claimAmount;
     private ClaimStatus status;
     private String receiverBankingInfo;
-    private static int nextFID = 1;
 
-    public Claim(InsuranceCard cardNumber, LocalDate examDate, BigDecimal claimAmount) {
-        this.fID = generateFID();
+    public Claim(String fID, InsuranceCard cardNumber, LocalDate examDate, BigDecimal claimAmount) {
+        this.fID = fID;
         this.claimDate = LocalDate.now();
         this.cardNumber = cardNumber;
         this.examDate = examDate;
@@ -31,17 +30,28 @@ public class Claim {
         setInsuredPerson(cardNumber.getCardHolder());
     }
 
-    protected synchronized String generateFID() {
-        String FID = "f-" + String.format("%010d", nextFID);
-        nextFID++;
-        return FID;
+    public Claim(String fID, LocalDate claimDate, String insuredPerson, LocalDate examDate, List<String> documentList, BigDecimal claimAmount, ClaimStatus status, String receiverBankingInfo) {
+        this.fID = fID;
+        this.claimDate = claimDate;
+        this.insuredPerson = insuredPerson;
+        this.examDate = examDate;
+        this.documentList = documentList;
+        this.claimAmount = claimAmount;
+        this.status = status;
+        this.receiverBankingInfo = receiverBankingInfo;
+        this.cardNumber = null;
     }
+
     public boolean addDocument(String documentName) {
         String claimID = getFID();
         String cardNumber = getCardNumber().getCardNumber();
         String fullDocument = claimID + "_" + cardNumber + "_" + documentName + ".pdf";
 
         return documentList.add(fullDocument);
+    }
+
+    public void setCardNumber(InsuranceCard cardNumber) {
+        this.cardNumber = cardNumber;
     }
 
     public void setReceiverBankingInfo(String bank, String name, String number) {

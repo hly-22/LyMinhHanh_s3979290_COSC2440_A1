@@ -1,2 +1,4 @@
 # Claims File
-# Format:
+# Format: FID, ClaimDate, InsuredPerson, CardNumber, ExamDate, DocumentList, ClaimAmount, Status, ReceiverBankingInfo
+
+f-0987654321,2024-04-06,c-2929292,2910392091,2005-03-13,[],USD 34.22,NEW,null

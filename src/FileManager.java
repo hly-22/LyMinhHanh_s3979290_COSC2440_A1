@@ -1,4 +1,5 @@
 import java.io.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +22,7 @@ public class FileManager {
                 if (line.startsWith("#") || line.isEmpty()) {
                     continue;
                 }
-                
+
                 Customer customer = parseCustomer(line);
                 if (customer != null) {
                     customers.add(customer);
@@ -114,9 +115,7 @@ public class FileManager {
 
                 InsuranceCard insuranceCard = new InsuranceCard(cardNumber, cardHolderCID, policyOwner, expirationDate);
 
-                if (insuranceCard != null) {
-                    insuranceCards.add(insuranceCard);
-                }
+                insuranceCards.add(insuranceCard);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -146,7 +145,79 @@ public class FileManager {
     }
 
     // Claims File Read and Write Methods
+    public List<Claim> readAllClaims() {
+        List<Claim> claims = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(CLAIM_FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("#") || line.isEmpty()) {
+                    continue;
+                }
 
+                String[] tokens = line.split(ATTRIBUTE_DELIMITER);
+                if (tokens.length < 7) {
+                    System.err.println("Invalid insurance card data: " + line);
+                    return null;
+                }
+
+                String fID = tokens[0];
+                LocalDate claimDate = LocalDate.parse(tokens[1]);
+                String insuredPerson = tokens[2];
+                LocalDate examDate = LocalDate.parse(tokens[4]);
+                List<String> documentList = getDocumentListFromString(tokens[5]);
+
+                String claimAmountString = tokens[6];
+                String numericValue = claimAmountString.replaceAll("[^\\d.]", "");
+                BigDecimal claimAmount = new BigDecimal(numericValue);
+
+                ClaimStatus status = ClaimStatus.valueOf(tokens[7]);
+                String receiverBankingInfo = tokens[8];
+
+                Claim claim = new Claim(fID, claimDate, insuredPerson, examDate, documentList, claimAmount, status, receiverBankingInfo);
+
+                String cardNumber = tokens[3];
+                List<InsuranceCard> allInsuranceCards= readAllInsuranceCards();
+
+                for (InsuranceCard insuranceCard : allInsuranceCards) {
+                    if (insuranceCard.getCardNumber().equals(cardNumber)) {
+                        claim.setCardNumber(insuranceCard);
+                    }
+                }
+
+                claims.add(claim);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return claims;
+    }
+    public void writeAllClaims(List<Claim> claims) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(CLAIM_FILE_PATH))) {
+            bw.write("""
+                    # Claims File
+                    # Format: FID, ClaimDate, InsuredPerson, CardNumber, ExamDate, DocumentList, ClaimAmount, Status, ReceiverBankingInfo   
+                             
+                    """);
+            for (Claim claimObject : claims) {
+                Claim claim = claimObject;
+                String claimLine = String.join(ATTRIBUTE_DELIMITER,
+                        claim.getFID(),
+                        claim.getClaimDate().toString(),
+                        claim.getInsuredPerson(),
+                        claim.getCardNumber().getCardNumber(),
+                        claim.getExamDate().toString(),
+                        claim.getDocumentList().toString(),
+                        "USD " + claim.getClaimAmount().toString(),
+                        claim.getStatus().toString(),
+                        claim.getReceiverBankingInfo());
+                bw.write(claimLine + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Helper Methods
     private static String getClaimListAsString(List<Claim> claimList) {
         if (claimList == null || claimList.isEmpty()) {
             return "null";
@@ -203,5 +274,16 @@ public class FileManager {
         dependents.addAll(Arrays.asList(dependentList));
 
         return dependents;
+    }
+    private List<String> getDocumentListFromString(String documentListString) {
+        List<String> documentList = new ArrayList<>();
+        if (documentListString == null || documentListString.isEmpty() || documentListString.equals("null")) {
+            return documentList;
+        }
+
+        String[] dependentList = documentListString.split(LIST_DELIMITER);
+        documentList.addAll(Arrays.asList(dependentList));
+
+        return documentList;
     }
 }
