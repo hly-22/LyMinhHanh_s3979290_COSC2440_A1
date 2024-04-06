@@ -5,7 +5,6 @@
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -455,7 +454,9 @@ public class SystemManager implements ClaimProcessManager{
     }
 
     @Override
-    public void getOneClaim(String fID) {
+    public void getOneClaim() {
+        System.out.println("Enter the claim fID you want to update (f-xxxxxxxxxx): ");
+        String fID = scanner.nextLine();
         Claim claim = findClaimByID(fID);
         claimViewText.view(claim);
     }

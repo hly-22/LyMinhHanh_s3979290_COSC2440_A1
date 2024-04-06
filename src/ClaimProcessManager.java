@@ -8,7 +8,7 @@ public interface ClaimProcessManager {
     void addClaim();
     boolean updateClaim(String fID);
     void deleteClaim();
-    void getOneClaim(String fID);
+    void getOneClaim();
     void getAllClaims();
 
 

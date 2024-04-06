@@ -48,11 +48,7 @@ public class MainMenu {
                     systemManager.updateClaim(updateFID);
                 }
                 case 7 -> systemManager.deleteClaim();
-                case 8 -> {
-                    System.out.println("Enter the claim fID you want to display: ");
-                    String readFID = scanner.nextLine();
-                    systemManager.getOneClaim(readFID);
-                }
+                case 8 -> systemManager.getOneClaim();
                 case 9 -> systemManager.getAllClaims();
                 case 0 -> {
                     System.out.println("Exiting...");
