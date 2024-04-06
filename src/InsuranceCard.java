@@ -6,36 +6,39 @@ import java.time.LocalDate;
 
 public class InsuranceCard {
     private String cardNumber;
-    private Customer cardHolder;
+    private String cardHolder;
     private String policyOwner;
     private LocalDate expirationDate;
-    private static int nextCardNumber = 1;
 
-    public InsuranceCard(Customer cardHolder) {
-        this.cardNumber = generateCardNumber();
+    public InsuranceCard(String cardNumber,String cardHolder) {
+        this.cardNumber = cardNumber;
         this.cardHolder = cardHolder;
-        this.cardNumber = generateCardNumber();
     }
 
-    protected synchronized String generateCardNumber() {
-        String cardNumber = String.format("%010d", nextCardNumber);
-        nextCardNumber++;
-        return cardNumber;
+    public InsuranceCard(String cardNumber, String cardHolder, LocalDate expirationDate) {
+        this.cardNumber = cardNumber;
+        this.cardHolder = cardHolder;
+        this.policyOwner = null;
+        this.expirationDate = expirationDate;
     }
+
+    public InsuranceCard(String cardNumber, String cardHolder, String policyOwner, LocalDate expirationDate) {
+        this.cardNumber = cardNumber;
+        this.cardHolder = cardHolder;
+        this.policyOwner = policyOwner;
+        this.expirationDate = expirationDate;
+    }
+
 
     public void setPolicyOwner(String policyOwner) {
         this.policyOwner = policyOwner;
-    }
-
-    public void setExpirationDate(LocalDate expirationDate) {
-        this.expirationDate = expirationDate;
     }
 
     public String getCardNumber() {
         return cardNumber;
     }
 
-    public Customer getCardHolder() {
+    public String getCardHolder() {
         return cardHolder;
     }
 

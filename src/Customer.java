@@ -7,26 +7,25 @@ import java.util.List;
 public abstract class Customer{
     private String cID;
     private String fullName;
-    private InsuranceCard insuranceCard;
+    private String insuranceCardNumber;
     private List<Claim> claimList;
-    private static int nextCID = 1;
 
     public Customer(String cID, String fullName) {
         this.cID = cID;
         this.fullName = fullName;
-        this.insuranceCard = null;
+        this.insuranceCardNumber = null;
         this.claimList = null;
     }
 
-    public Customer(String cID, String fullName, InsuranceCard insuranceCard, List<Claim> claimList) {
+    public Customer(String cID, String fullName, String insuranceCardNumber, List<Claim> claimList) {
         this.cID = cID;
         this.fullName = fullName;
-        this.insuranceCard = null;
+        this.insuranceCardNumber = insuranceCardNumber;
         this.claimList = null;
     }
 
-    public void setInsuranceCard(InsuranceCard insuranceCard) {
-        this.insuranceCard = insuranceCard;
+    public void setInsuranceCard(String insuranceCardNumber) {
+        this.insuranceCardNumber = insuranceCardNumber;
     }
 
     public String getCID() {
@@ -37,18 +36,16 @@ public abstract class Customer{
         return fullName;
     }
 
-
-    public InsuranceCard getInsuranceCard() {
-        return insuranceCard;
+    public String getInsuranceCardNumber() {
+        return insuranceCardNumber;
     }
 
-    public String getCardNumber() {
-        if (insuranceCard != null) {
-            return insuranceCard.getCardNumber();
-        }
-        return null;
-    }
     public List<Claim> getClaimList() {
         return claimList; // work on this
     }
+
+    public void setInsuranceCardNumber(String String) {
+        this.insuranceCardNumber = String;
+    }
+
 }

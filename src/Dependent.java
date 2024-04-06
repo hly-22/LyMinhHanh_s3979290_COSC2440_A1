@@ -12,16 +12,12 @@ public class Dependent extends Customer {
         this.policyHolder = policyHolder;
     }
 
-    public Dependent(String cID, String fullName, InsuranceCard insuranceCard, List<Claim> claimList, String policyHolder) {
-        super(cID, fullName, insuranceCard, claimList);
+    public Dependent(String cID, String fullName, String insuranceCardNumber, List<Claim> claimList, String policyHolder) {
+        super(cID, fullName, insuranceCardNumber, claimList);
         this.policyHolder = policyHolder;
     }
 
     public String getPolicyHolder() {
         return policyHolder;
-    }
-
-    public void setPolicyHolder(String policyHolder) {
-        this.policyHolder = policyHolder;
     }
 }

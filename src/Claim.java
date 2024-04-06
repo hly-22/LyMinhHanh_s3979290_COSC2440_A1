@@ -10,7 +10,7 @@ import java.util.List;
 public class Claim {
     private String fID;
     private LocalDate claimDate;
-    private Customer insuredPerson;
+    private String insuredPerson;
     private InsuranceCard cardNumber;
     private LocalDate examDate;
     private List<String> documentList;
@@ -22,13 +22,13 @@ public class Claim {
     public Claim(InsuranceCard cardNumber, LocalDate examDate, BigDecimal claimAmount) {
         this.fID = generateFID();
         this.claimDate = LocalDate.now();
-        setInsuredPerson();
         this.cardNumber = cardNumber;
         this.examDate = examDate;
         this.documentList = new ArrayList<>();
         this.claimAmount = claimAmount;
         this.status = ClaimStatus.NEW;
         this.receiverBankingInfo = null;
+        setInsuredPerson(cardNumber.getCardHolder());
     }
 
     protected synchronized String generateFID() {
@@ -48,13 +48,8 @@ public class Claim {
         this.receiverBankingInfo = bank + " - " + name + " - " + number;;
     }
 
-    public void setInsuredPerson() {
-        this.insuredPerson = cardNumber.getCardHolder();
-    }
-
-    public void setCardNumber(InsuranceCard cardNumber) {
-        this.cardNumber = cardNumber;
-        setInsuredPerson();
+    public void setInsuredPerson(String insuredPerson) {
+        this.insuredPerson = insuredPerson;
     }
 
     public void setExamDate(LocalDate examDate) {
@@ -78,7 +73,7 @@ public class Claim {
         return claimDate;
     }
 
-    public Customer getInsuredPerson() {
+    public String getInsuredPerson() {
         return insuredPerson;
     }
 

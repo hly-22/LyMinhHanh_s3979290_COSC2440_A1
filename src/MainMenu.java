@@ -11,6 +11,7 @@ public class MainMenu {
         this.systemManager = systemManager;
         this.scanner = DataInput.getDataInput().getScanner();
     }
+
     public void displayWelcomeMessage() {
         System.out.println("-----------------------------");
         System.out.println("-   Welcome to the system   -");
@@ -39,11 +40,7 @@ public class MainMenu {
                 case 1 -> systemManager.addCustomer();
                 case 2 -> systemManager.deleteCustomer();
                 case 3 -> systemManager.addInsuranceCard();
-                case 4 -> {
-                    System.out.println("Enter the insurance card number you want to delete: ");
-                    String cardNumber = scanner.nextLine();
-                    systemManager.deleteInsuranceCard(cardNumber);
-                }
+                case 4 -> systemManager.deleteInsuranceCard();
                 case 5 -> systemManager.addClaim();
                 case 6 -> {
                     System.out.println("Enter the claim fID you want to update (f-xxxxxxxxxx): ");
@@ -69,6 +66,7 @@ public class MainMenu {
             }
         }
 
+        systemManager.shutDownSystem();
         System.exit(0);
     }
 }

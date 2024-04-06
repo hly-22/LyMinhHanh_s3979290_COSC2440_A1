@@ -6,7 +6,10 @@
 
 public class Main {
     public static void main(String[] args) {
-        MainMenu mainMenu = new MainMenu(new SystemManager(new CustomerViewText(), new InsuranceCardViewText(), new ClaimViewText()));
+        SystemManager systemManager = new SystemManager();
+        MainMenu mainMenu = new MainMenu(systemManager);
+
+        systemManager.initializeSystem();
         mainMenu.displayWelcomeMessage();
         mainMenu.displayMenu();
     }

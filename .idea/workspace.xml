@@ -5,21 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eff0adab-e8db-44b0-8d70-c0ff291dafe9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ClaimProcessManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClaimProcessManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ClaimViewText.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClaimViewText.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Claim.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Claim.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Customer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CustomerViewText.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomerViewText.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DataInput.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataInput.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Dependent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Dependent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FileManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FileManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/InsuranceCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/InsuranceCard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/InsuranceCardViewText.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/InsuranceCardViewText.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MainMenu.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/PolicyHolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PolicyHolder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SystemManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SystemManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/customers.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/customers.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +73,9 @@
       <workItem from="1712276812686" duration="1032000" />
       <workItem from="1712278549495" duration="2345000" />
       <workItem from="1712286574839" duration="6505000" />
-      <workItem from="1712322321793" duration="15756000" />
+      <workItem from="1712322321793" duration="22528000" />
+      <workItem from="1712380570652" duration="10023000" />
+      <workItem from="1712392995850" duration="3697000" />
     </task>
     <servers />
   </component>

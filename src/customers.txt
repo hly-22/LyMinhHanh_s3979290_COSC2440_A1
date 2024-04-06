@@ -2,5 +2,8 @@
 # Format of Policy Holder: CID, FullName, InsuranceCard, ClaimList, DependentList
 # Format of Dependent: CID, FullName, InsuranceCard, ClaimList, PolicyHolderCID
 
-Policy Holder,c-0000003,HUHUHUH,null,null,c-2834982/c-0987678/c-1230987
+Policy Holder,c-0000003,HUHUHUH,null,null,c-2834982
 Dependent,c-2834982,mkomko,null,null,c-0000003
+Policy Holder,c-1231231,Superman,null,null,c-1231234
+Dependent,c-1231234,Lololo,null,null,c-1231231
+Policy Holder,c-2929292,Halla,2910392091,null,null
