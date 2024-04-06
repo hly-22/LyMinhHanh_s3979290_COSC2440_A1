@@ -3,6 +3,7 @@
  */
 
 import java.math.BigDecimal;
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -55,7 +56,7 @@ public class SystemManager implements ClaimProcessManager{
         return null;
     }
     public void addCustomer() {
-
+        System.out.println();
         System.out.println("Enter a valid cID (c-xxxxxxx): ");
         String cID = scanner.nextLine();
         if (!isValidCIDFormat(cID)) {
@@ -78,7 +79,7 @@ public class SystemManager implements ClaimProcessManager{
         }
         customerType = customerType.toLowerCase();
         if (customerType.equals("dependent")) {
-
+            System.out.println();
             System.out.println("Enter your PolicyHolder's cID (c-xxxxxxx): ");
             String pCID = scanner.nextLine();
             Customer policyHolderDependent = findCustomerByID(pCID);
@@ -107,6 +108,7 @@ public class SystemManager implements ClaimProcessManager{
         customerViewText.view((PolicyHolder) newPolicyHolder);
     }
     public void deleteCustomer() {
+        System.out.println();
         System.out.println("Enter the customer cID you want to delete (c-xxxxxxx): ");
         String cID = scanner.nextLine();
 
@@ -153,6 +155,7 @@ public class SystemManager implements ClaimProcessManager{
         return null;
     }
     public void addInsuranceCard() {
+        System.out.println();
         System.out.println("Does this customer exist in this system? (yes/no)");
         String response = scanner.nextLine();
 
@@ -226,6 +229,7 @@ public class SystemManager implements ClaimProcessManager{
         insuranceCardViewText.view(insuranceCard);
     }
     public void deleteInsuranceCard() {
+        System.out.println();
         System.out.println("Enter the insurance card number you want to delete: ");
         String cardNumber = scanner.nextLine();
 
@@ -257,6 +261,7 @@ public class SystemManager implements ClaimProcessManager{
     }
     @Override
     public void addClaim() {
+        System.out.println();
         System.out.println("Enter a valid fID (f-xxxxxxxxxx): ");
         String fID = scanner.nextLine();
         if (!isValidFIDFormat(fID)) {
@@ -310,6 +315,7 @@ public class SystemManager implements ClaimProcessManager{
         if (response.equalsIgnoreCase("yes")) {
             boolean hasDocument = true;
             while (hasDocument) {
+                System.out.println();
                 System.out.println("Enter the name of the document with no space.");
                 System.out.println("Or enter 'Done' when no more adding.");
                 String documentName = scanner.nextLine();
@@ -347,7 +353,11 @@ public class SystemManager implements ClaimProcessManager{
         claimViewText.view(newClaim);
     }
     @Override
-    public boolean updateClaim(String fID) {
+    public boolean updateClaim() {
+        System.out.println();
+        System.out.println("Enter the claim fID you want to update (f-xxxxxxxxxx): ");
+        String fID = scanner.nextLine();
+
         Claim claimToUpdate = findClaimByID(fID);
         if (claimToUpdate == null) {
             System.out.println("Claim not found.");
@@ -356,7 +366,9 @@ public class SystemManager implements ClaimProcessManager{
 
         boolean updateAnother = true;
         while (updateAnother) {
-            System.out.println("Choose what you want to update.");
+            System.out.println("-------------------------------");
+            System.out.println("- What do you want to update? -");
+            System.out.println("-------------------------------");
             System.out.println("1. Exam date");
             System.out.println("2. Claim amount");
             System.out.println("3. Status");
@@ -367,19 +379,33 @@ public class SystemManager implements ClaimProcessManager{
             int response = Integer.parseInt(scanner.nextLine());
             switch (response) {
                 case 1:
+                    System.out.println();
                     System.out.println("Enter new exam date (yyyy-mm-dd): ");
-                    LocalDate newDate = LocalDate.parse(scanner.nextLine());
-                    claimToUpdate.setExamDate(newDate);
-                    System.out.println("Exam date updated.");
+                    try {
+                        LocalDate newDate = LocalDate.parse(scanner.nextLine());
+                        claimToUpdate.setExamDate(newDate);
+                        System.out.println("Updated exam date: " + newDate);
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Invalid date format.");
+                        break;
+                    }
                     break;
                 case 2:
-                    System.out.println("Enter new claim amount: ");
-                    BigDecimal newClaimAmount = scanner.nextBigDecimal();
-                    claimToUpdate.setClaimAmount(newClaimAmount);
-                    System.out.println("Claim amount updated.");
+                    System.out.println();
+                    System.out.println("Enter new claim amount (USD xx.xx):");
+                    BigDecimal claimAmount;
+                    try {
+                        claimAmount = new BigDecimal(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid claim amount format.");
+                        break;
+                    }
+                    claimToUpdate.setClaimAmount(claimAmount);
+                    System.out.println("Updated claim amount: USD " + claimAmount);
                     break;
                 case 3:
-                    System.out.println("Please select new status: ");
+                    System.out.println();
+                    System.out.println("Select a status to update: ");
                     System.out.println("1. PROCESSING");
                     System.out.println("2. DONE");
 
@@ -394,32 +420,42 @@ public class SystemManager implements ClaimProcessManager{
                             newStatus = ClaimStatus.DONE;
                             break;
                         default:
-                            System.out.println("Invalid input. Please try again.");
+                            System.out.println("Invalid input.");
                             break;
                     }
 
                     if (newStatus != null) {
                         claimToUpdate.setStatus(newStatus);
-                        System.out.println("Claim status updated.");
+                        System.out.println("Updated claim status: " + newStatus);
                     }
                     break;
                 case 4:
+                    System.out.println();
                     System.out.println("Enter new receiver banking information (bank, name, number): ");
-                    String[] bankingInfo = scanner.nextLine().split(",");
-                    if (bankingInfo.length != 3) {
-                        System.out.println("Invalid input format. Please provide bank, name, and number separated by commas.");
+                    try {
+                        String input = scanner.nextLine();
+                        String[] parts = input.split(",");
+                        if (parts.length < 3) {
+                            System.out.println("Invalid input. Please make sure you provide all required information.");
+                            break;
+                        }
+                        String bank = parts[0].trim();
+                        String name = parts[1].trim();
+                        String number = parts[2].trim();
+
+                        claimToUpdate.setReceiverBankingInfo(bank, name, number);
+                        System.out.println("Updated receiver banking information: " + claimToUpdate.getReceiverBankingInfo());
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        System.out.println("Invalid input. Please make sure you provide all required information.");
                         break;
                     }
-                    String bank = bankingInfo[0].trim();
-                    String name = bankingInfo[1].trim();
-                    String number = bankingInfo[2].trim();
-                    claimToUpdate.setReceiverBankingInfo(bank, name, number);
-                    System.out.println("Receiver banking information updated.");
                     break;
                 case 5:
+                    System.out.println();
                     System.out.println("Enter new document name: ");
                     String newDocumentName = scanner.nextLine();
                     claimToUpdate.addDocument(newDocumentName);
+                    System.out.println("New document: " + claimToUpdate.getDocument(newDocumentName));
                     break;
                 case 6:
                     updateAnother = false;
@@ -435,6 +471,7 @@ public class SystemManager implements ClaimProcessManager{
 
     @Override
     public void deleteClaim() {
+        System.out.println();
         System.out.println("Enter the claim fID you want to update (f-xxxxxxxxxx): ");
         String fID = scanner.nextLine();
 
@@ -455,6 +492,7 @@ public class SystemManager implements ClaimProcessManager{
 
     @Override
     public void getOneClaim() {
+        System.out.println();
         System.out.println("Enter the claim fID you want to update (f-xxxxxxxxxx): ");
         String fID = scanner.nextLine();
         Claim claim = findClaimByID(fID);

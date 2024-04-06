@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 /**
@@ -13,17 +14,19 @@ public class MainMenu {
     }
 
     public void displayWelcomeMessage() {
-        System.out.println("-----------------------------");
-        System.out.println("-   Welcome to the system   -");
-        System.out.println("-----------------------------");
+        System.out.println("=========================================");
+        System.out.println("=   WELCOME TO CLAIM MANAGEMENT SYSTEM  =");
+        System.out.println("=========================================");
         System.out.println();
     }
     public void displayMenu() {
         boolean exit = false;
 
         while (!exit) {
-            System.out.println("Please choose an option.");
             System.out.println();
+            System.out.println("--------------------");
+            System.out.println("- Choose an option -");
+            System.out.println("--------------------");
             System.out.println("1. Add customer");
             System.out.println("2. Delete customer");
             System.out.println("3. Add insurance card");
@@ -42,16 +45,15 @@ public class MainMenu {
                 case 3 -> systemManager.addInsuranceCard();
                 case 4 -> systemManager.deleteInsuranceCard();
                 case 5 -> systemManager.addClaim();
-                case 6 -> {
-                    System.out.println("Enter the claim fID you want to update (f-xxxxxxxxxx): ");
-                    String updateFID = scanner.nextLine();
-                    systemManager.updateClaim(updateFID);
-                }
+                case 6 -> systemManager.updateClaim();
                 case 7 -> systemManager.deleteClaim();
                 case 8 -> systemManager.getOneClaim();
                 case 9 -> systemManager.getAllClaims();
                 case 0 -> {
-                    System.out.println("Exiting...");
+                    System.out.println();
+                    System.out.println("=====================");
+                    System.out.println("= SEE YOU NEXT TIME =");
+                    System.out.println("=====================");
                     exit = true;
                 }
                 default -> System.out.println("Invalid option. Please try again");

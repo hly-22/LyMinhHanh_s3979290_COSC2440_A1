@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ClaimProcessManager {
     void addClaim();
-    boolean updateClaim(String fID);
+    boolean updateClaim();
     void deleteClaim();
     void getOneClaim();
     void getAllClaims();

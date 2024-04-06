@@ -50,6 +50,9 @@ public class Claim {
 
         return documentList.add(fullDocument);
     }
+    public String getDocument(String documentName) {
+        return fID + "_" + cardNumber.getCardNumber() + "_" + documentName + ".pdf";
+    }
 
     public void setCardNumber(InsuranceCard cardNumber) {
         this.cardNumber = cardNumber;
