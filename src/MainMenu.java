@@ -47,11 +47,7 @@ public class MainMenu {
                     String updateFID = scanner.nextLine();
                     systemManager.updateClaim(updateFID);
                 }
-                case 7 -> {
-                    System.out.println("Enter the claim fID you want to delete (f-xxxxxxxxxx): ");
-                    String deleteFID = scanner.nextLine();
-                    systemManager.deleteClaim(deleteFID);
-                }
+                case 7 -> systemManager.deleteClaim();
                 case 8 -> {
                     System.out.println("Enter the claim fID you want to display: ");
                     String readFID = scanner.nextLine();

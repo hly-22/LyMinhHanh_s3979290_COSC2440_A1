@@ -435,14 +435,23 @@ public class SystemManager implements ClaimProcessManager{
 
 
     @Override
-    public boolean deleteClaim(String fID) {
-        Claim claim = findClaimByID(fID);
-        if (claim != null) {
-            claims.remove(claim);
-            return true;
+    public void deleteClaim() {
+        System.out.println("Enter the claim fID you want to update (f-xxxxxxxxxx): ");
+        String fID = scanner.nextLine();
+
+        Claim claimToDelete = findClaimByID(fID);
+        if (claimToDelete != null) {
+            claims.remove(claimToDelete);
+
+            Customer customer = findCustomerByID(claimToDelete.getInsuredPerson());
+            if (customer != null) {
+                customer.removeClaim(claimToDelete);
+            }
+            System.out.println("Claim [" + fID + "] has been deleted.");
+        } else {
+            System.out.println("Claim [" + fID + "] is not found.");
         }
 
-        return false;
     }
 
     @Override
