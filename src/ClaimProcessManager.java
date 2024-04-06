@@ -2,8 +2,6 @@
  * @author <Ly Minh Hanh - s3979290>
  */
 
-import java.util.List;
-
 public interface ClaimProcessManager {
     void addClaim();
     boolean updateClaim();

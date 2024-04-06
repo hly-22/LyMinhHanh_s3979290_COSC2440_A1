@@ -1,8 +1,8 @@
-import java.util.List;
-
 /**
  * @author <Ly Minh Hanh - s3979290>
  */
+
+import java.util.List;
 
 public class Dependent extends Customer {
     private String policyHolder;

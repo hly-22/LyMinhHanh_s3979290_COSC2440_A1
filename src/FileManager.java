@@ -250,10 +250,6 @@ public class FileManager {
                     claims.add(claim);
                 }
             }
-//            Claim claim = findClaimByID(claimID);
-//            if (claim != null) {
-//                claims.add(claim);
-//            }
         }
         return claims;
     }

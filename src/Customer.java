@@ -4,7 +4,6 @@
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public abstract class Customer {
     private String cID;
@@ -57,18 +56,4 @@ public abstract class Customer {
     public boolean removeClaim(Claim claim) {
         return claimList.remove(claim);
     }
-//        int indexToRemove = -1;
-//        for (int i = 0; i < claimList.size(); i++) {
-//            if (claimList.get(i).equals(claim)) {
-//                indexToRemove = i;
-//                break;
-//            }
-//        }
-//        if (indexToRemove != -1) {
-//            claimList.remove(indexToRemove);
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
 }
