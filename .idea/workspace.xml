@@ -6,12 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="eff0adab-e8db-44b0-8d70-c0ff291dafe9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ClaimProcessManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClaimProcessManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ClaimViewText.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClaimViewText.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Customer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CustomerViewText.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomerViewText.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/InsuranceCardViewText.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/InsuranceCardViewText.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MainMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Claim.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Claim.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +66,8 @@
       <workItem from="1712286574839" duration="6505000" />
       <workItem from="1712322321793" duration="22528000" />
       <workItem from="1712380570652" duration="10023000" />
-      <workItem from="1712392995850" duration="27160000" />
+      <workItem from="1712392995850" duration="27719000" />
+      <workItem from="1712468190725" duration="2643000" />
     </task>
     <servers />
   </component>

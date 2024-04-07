@@ -114,6 +114,7 @@ public class Claim {
     public String getReceiverBankingInfo() {
         return receiverBankingInfo;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -121,7 +122,6 @@ public class Claim {
         Claim other = (Claim) o;
         return Objects.equals(this.getFID(), other.getFID());
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(getFID());
